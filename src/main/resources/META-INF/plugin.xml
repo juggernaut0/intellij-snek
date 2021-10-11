@@ -16,6 +16,8 @@
                   fieldName="INSTANCE" language="Snek" extensions="snek"/>
         <lang.parserDefinition language="Snek"
                                implementationClass="com.github.juggernaut0.snek.SnekParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Snek"
+                                       implementationClass="com.github.juggernaut0.snek.SnekSyntaxHighlighterFactory"/>
     </extensions>
 
     <actions>
