@@ -14,6 +14,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="Snek File" implementationClass="com.github.juggernaut0.snek.SnekFileType"
                   fieldName="INSTANCE" language="Snek" extensions="snek"/>
+        <lang.parserDefinition language="Snek"
+                               implementationClass="com.github.juggernaut0.snek.SnekParserDefinition"/>
     </extensions>
 
     <actions>
