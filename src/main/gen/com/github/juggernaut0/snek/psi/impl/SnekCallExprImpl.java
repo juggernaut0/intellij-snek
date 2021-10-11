@@ -27,4 +27,10 @@ public class SnekCallExprImpl extends ASTWrapperPsiElement implements SnekCallEx
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<SnekExpr> getExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, SnekExpr.class);
+  }
+
 }

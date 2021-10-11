@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface SnekBinding extends PsiElement {
 
-  @NotNull
+  @Nullable
   SnekExpr getExpr();
 
-  @NotNull
+  @Nullable
   SnekPattern getPattern();
 
 }

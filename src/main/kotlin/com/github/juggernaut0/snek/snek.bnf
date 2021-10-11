@@ -13,13 +13,14 @@
   tokenTypeClass="com.github.juggernaut0.snek.psi.SnekTokenType"
 }
 
-simpleFile ::= decl*
+snekFile ::= decl*
 
-decl ::= binding | call_expr
+decl ::= COMMENT | binding | call_expr {recoverWhile=recover}
+private recover ::= !(PUBLIC | LET | L_PAREN)
 
-binding ::= LET pattern EQUALS expr
+binding ::= PUBLIC? LET pattern EQUALS expr {pin=2}
 
 pattern ::= IDENT
 
-expr ::= STRING | call_expr
-call_expr ::= L_PAREN IDENT+ R_PAREN
+expr ::= STRING | IDENT | call_expr
+call_expr ::= L_PAREN expr+ R_PAREN {pin=1}

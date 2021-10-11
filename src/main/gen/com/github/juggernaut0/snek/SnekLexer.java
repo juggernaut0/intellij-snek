@@ -54,8 +54,9 @@ class SnekLexer implements FlexLexer {
 
   /* The ZZ_CMAP_A table has 320 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\5\1\22\0\1\1\1\0\1\13\4\0\1\14\1\11\1\12\6\0\12\3\3\0\1\10\3\0\32\2"+
-    "\1\0\1\4\4\0\4\2\1\6\6\2\1\5\7\2\1\7\6\2\12\0\1\1\242\0\2\1\26\0");
+    "\11\0\1\1\1\2\2\1\1\2\22\0\1\1\1\0\1\22\1\6\3\0\1\23\1\20\1\21\6\0\12\4\3"+
+    "\0\1\17\3\0\32\3\1\0\1\5\2\0\1\3\1\0\1\3\1\11\1\14\1\3\1\15\3\3\1\13\2\3\1"+
+    "\12\3\3\1\7\3\3\1\16\1\10\5\3\12\0\1\1\242\0\2\1\26\0");
 
   /** 
    * Translates DFA states to action switch labels.
@@ -63,11 +64,12 @@ class SnekLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\2\0\1\1\1\2\2\3\1\4\1\5\1\6\2\1"+
-    "\1\3\1\0\1\7\1\0\1\10";
+    "\2\0\1\1\1\2\1\3\1\4\2\3\1\5\1\6"+
+    "\1\7\2\1\2\3\1\0\1\10\1\0\1\3\1\11"+
+    "\2\3\1\12";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[16];
+    int [] result = new int[23];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -92,11 +94,12 @@ class SnekLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\15\0\32\0\47\0\64\0\101\0\32\0\32"+
-    "\0\32\0\116\0\133\0\150\0\116\0\32\0\133\0\64";
+    "\0\0\0\24\0\50\0\74\0\120\0\144\0\170\0\214"+
+    "\0\50\0\50\0\50\0\240\0\264\0\310\0\334\0\240"+
+    "\0\50\0\264\0\360\0\120\0\u0104\0\u0118\0\120";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[16];
+    int [] result = new int[23];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -119,15 +122,19 @@ class SnekLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\3\1\4\1\5\2\3\1\6\2\5\1\7\1\10"+
-    "\1\11\1\12\1\13\1\3\1\4\13\3\16\0\1\4"+
-    "\15\0\2\5\1\0\3\5\7\0\2\5\1\0\1\5"+
-    "\1\14\1\5\5\0\4\15\1\0\6\15\1\16\1\0"+
-    "\4\17\1\0\6\17\1\0\1\16\2\0\2\5\1\0"+
-    "\2\5\1\20\5\0";
+    "\1\3\2\4\1\5\2\3\1\6\1\7\2\5\1\10"+
+    "\4\5\1\11\1\12\1\13\1\14\1\15\1\3\2\4"+
+    "\21\3\25\0\2\4\24\0\2\5\2\0\10\5\5\0"+
+    "\2\6\1\0\21\6\3\0\2\5\2\0\1\5\1\16"+
+    "\6\5\10\0\2\5\2\0\6\5\1\17\1\5\5\0"+
+    "\5\20\1\0\14\20\1\21\1\0\5\22\1\0\14\22"+
+    "\1\0\1\21\3\0\2\5\2\0\2\5\1\23\5\5"+
+    "\10\0\2\5\2\0\7\5\1\24\10\0\2\5\2\0"+
+    "\3\5\1\25\4\5\10\0\2\5\2\0\4\5\1\26"+
+    "\3\5\10\0\2\5\2\0\5\5\1\27\2\5\5\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[117];
+    int [] result = new int[300];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -165,11 +172,11 @@ class SnekLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\2\0\1\11\3\1\3\11\3\1\1\0\1\11\1\0"+
-    "\1\1";
+    "\2\0\1\11\5\1\3\11\4\1\1\0\1\11\1\0"+
+    "\5\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[16];
+    int [] result = new int[23];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -486,42 +493,52 @@ class SnekLexer implements FlexLexer {
             { return TokenType.BAD_CHARACTER;
             } 
             // fall through
-          case 9: break;
+          case 11: break;
           case 2: 
             { yybegin(YYINITIAL); return TokenType.WHITE_SPACE;
             } 
             // fall through
-          case 10: break;
+          case 12: break;
           case 3: 
             { yybegin(YYINITIAL); return SnekTypes.IDENT;
             } 
             // fall through
-          case 11: break;
-          case 4: 
-            { yybegin(YYINITIAL); return SnekTypes.EQUALS;
-            } 
-            // fall through
-          case 12: break;
-          case 5: 
-            { yybegin(YYINITIAL); return SnekTypes.L_PAREN;
-            } 
-            // fall through
           case 13: break;
-          case 6: 
-            { yybegin(YYINITIAL); return SnekTypes.R_PAREN;
+          case 4: 
+            { yybegin(YYINITIAL); return SnekTypes.COMMENT;
             } 
             // fall through
           case 14: break;
-          case 7: 
-            { yybegin(YYINITIAL); return SnekTypes.STRING;
+          case 5: 
+            { yybegin(YYINITIAL); return SnekTypes.EQUALS;
             } 
             // fall through
           case 15: break;
-          case 8: 
-            { yybegin(YYINITIAL); return SnekTypes.LET;
+          case 6: 
+            { yybegin(YYINITIAL); return SnekTypes.L_PAREN;
             } 
             // fall through
           case 16: break;
+          case 7: 
+            { yybegin(YYINITIAL); return SnekTypes.R_PAREN;
+            } 
+            // fall through
+          case 17: break;
+          case 8: 
+            { yybegin(YYINITIAL); return SnekTypes.STRING;
+            } 
+            // fall through
+          case 18: break;
+          case 9: 
+            { yybegin(YYINITIAL); return SnekTypes.LET;
+            } 
+            // fall through
+          case 19: break;
+          case 10: 
+            { yybegin(YYINITIAL); return SnekTypes.PUBLIC;
+            } 
+            // fall through
+          case 20: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

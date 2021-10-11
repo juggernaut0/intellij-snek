@@ -17,14 +17,18 @@ import com.intellij.psi.TokenType;
 
 CRLF=\R
 WHITE_SPACE=[\ \n\t\f]
-IDENT_START=[a-zA-Z]
-IDENT_CONTINUE=[a-zA-Z0-9]
+IDENT_START=[_a-zA-Z]
+IDENT_CONTINUE=[_a-zA-Z0-9]
 STRING_CONTENTS=[^\"\'\\]
+END_OF_LINE_COMMENT="#"[^\r\n]*
 
 %state STRING
 
 %%
 
+<YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return SnekTypes.COMMENT; }
+
+<YYINITIAL> "public"                                        { yybegin(YYINITIAL); return SnekTypes.PUBLIC; }
 <YYINITIAL> "let"                                           { yybegin(YYINITIAL); return SnekTypes.LET; }
 <YYINITIAL> "="                                             { yybegin(YYINITIAL); return SnekTypes.EQUALS; }
 <YYINITIAL> "("                                             { yybegin(YYINITIAL); return SnekTypes.L_PAREN; }

@@ -26,8 +26,7 @@ class SnekParserDefinition : ParserDefinition {
   }
 
   override fun getCommentTokens(): TokenSet {
-    //return COMMENTS
-    return TokenSet.EMPTY
+    return COMMENTS
   }
 
   override fun getStringLiteralElements(): TokenSet {
@@ -56,7 +55,7 @@ class SnekParserDefinition : ParserDefinition {
 
   companion object {
     val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
-    //val COMMENTS = TokenSet.create(SnekTypes.COMMENT)
+    val COMMENTS = TokenSet.create(SnekTypes.COMMENT)
     val FILE = IFileElementType(SnekLanguage)
   }
 }

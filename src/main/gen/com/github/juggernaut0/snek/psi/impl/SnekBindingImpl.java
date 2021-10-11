@@ -28,15 +28,15 @@ public class SnekBindingImpl extends ASTWrapperPsiElement implements SnekBinding
   }
 
   @Override
-  @NotNull
+  @Nullable
   public SnekExpr getExpr() {
-    return findNotNullChildByClass(SnekExpr.class);
+    return findChildByClass(SnekExpr.class);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public SnekPattern getPattern() {
-    return findNotNullChildByClass(SnekPattern.class);
+    return findChildByClass(SnekPattern.class);
   }
 
 }

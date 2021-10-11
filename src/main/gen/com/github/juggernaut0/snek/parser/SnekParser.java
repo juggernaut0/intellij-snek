@@ -32,47 +32,57 @@ public class SnekParser implements PsiParser, LightPsiParser {
   }
 
   static boolean parse_root_(IElementType t, PsiBuilder b, int l) {
-    return simpleFile(b, l + 1);
+    return snekFile(b, l + 1);
   }
 
   /* ********************************************************** */
-  // LET pattern EQUALS expr
+  // PUBLIC? LET pattern EQUALS expr
   public static boolean binding(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "binding")) return false;
-    if (!nextTokenIs(b, LET)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LET);
-    r = r && pattern(b, l + 1);
-    r = r && consumeToken(b, EQUALS);
-    r = r && expr(b, l + 1);
-    exit_section_(b, m, BINDING, r);
-    return r;
+    if (!nextTokenIs(b, "<binding>", LET, PUBLIC)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, BINDING, "<binding>");
+    r = binding_0(b, l + 1);
+    r = r && consumeToken(b, LET);
+    p = r; // pin = 2
+    r = r && report_error_(b, pattern(b, l + 1));
+    r = p && report_error_(b, consumeToken(b, EQUALS)) && r;
+    r = p && expr(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // PUBLIC?
+  private static boolean binding_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "binding_0")) return false;
+    consumeToken(b, PUBLIC);
+    return true;
   }
 
   /* ********************************************************** */
-  // L_PAREN IDENT+ R_PAREN
+  // L_PAREN expr+ R_PAREN
   public static boolean call_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "call_expr")) return false;
     if (!nextTokenIs(b, L_PAREN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, CALL_EXPR, null);
     r = consumeToken(b, L_PAREN);
-    r = r && call_expr_1(b, l + 1);
-    r = r && consumeToken(b, R_PAREN);
-    exit_section_(b, m, CALL_EXPR, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, call_expr_1(b, l + 1));
+    r = p && consumeToken(b, R_PAREN) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // IDENT+
+  // expr+
   private static boolean call_expr_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "call_expr_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, IDENT);
+    r = expr(b, l + 1);
     while (r) {
       int c = current_position_(b);
-      if (!consumeToken(b, IDENT)) break;
+      if (!expr(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "call_expr_1", c)) break;
     }
     exit_section_(b, m, null, r);
@@ -80,26 +90,26 @@ public class SnekParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // binding | call_expr
+  // COMMENT | binding | call_expr
   public static boolean decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "decl")) return false;
-    if (!nextTokenIs(b, "<decl>", LET, L_PAREN)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, DECL, "<decl>");
-    r = binding(b, l + 1);
+    r = consumeToken(b, COMMENT);
+    if (!r) r = binding(b, l + 1);
     if (!r) r = call_expr(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, r, false, SnekParser::recover);
     return r;
   }
 
   /* ********************************************************** */
-  // STRING | call_expr
+  // STRING | IDENT | call_expr
   public static boolean expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr")) return false;
-    if (!nextTokenIs(b, "<expr>", L_PAREN, STRING)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, EXPR, "<expr>");
     r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, IDENT);
     if (!r) r = call_expr(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -118,13 +128,34 @@ public class SnekParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // !(PUBLIC | LET | L_PAREN)
+  static boolean recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // PUBLIC | LET | L_PAREN
+  private static boolean recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, PUBLIC);
+    if (!r) r = consumeToken(b, LET);
+    if (!r) r = consumeToken(b, L_PAREN);
+    return r;
+  }
+
+  /* ********************************************************** */
   // decl*
-  static boolean simpleFile(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "simpleFile")) return false;
+  static boolean snekFile(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "snekFile")) return false;
     while (true) {
       int c = current_position_(b);
       if (!decl(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "simpleFile", c)) break;
+      if (!empty_element_parsed_guard_(b, "snekFile", c)) break;
     }
     return true;
   }

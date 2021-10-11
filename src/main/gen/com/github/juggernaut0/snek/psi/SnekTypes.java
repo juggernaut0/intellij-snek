@@ -14,10 +14,12 @@ public interface SnekTypes {
   IElementType EXPR = new SnekElementType("EXPR");
   IElementType PATTERN = new SnekElementType("PATTERN");
 
+  IElementType COMMENT = new SnekTokenType("COMMENT");
   IElementType EQUALS = new SnekTokenType("EQUALS");
   IElementType IDENT = new SnekTokenType("IDENT");
   IElementType LET = new SnekTokenType("LET");
   IElementType L_PAREN = new SnekTokenType("L_PAREN");
+  IElementType PUBLIC = new SnekTokenType("PUBLIC");
   IElementType R_PAREN = new SnekTokenType("R_PAREN");
   IElementType STRING = new SnekTokenType("STRING");
 

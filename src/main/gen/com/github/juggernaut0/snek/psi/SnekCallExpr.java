@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface SnekCallExpr extends PsiElement {
 
+  @NotNull
+  List<SnekExpr> getExprList();
+
 }
