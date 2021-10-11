@@ -1,0 +1,25 @@
+{
+  parserClass="com.github.juggernaut0.snek.parser.SnekParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Snek"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.github.juggernaut0.snek.psi"
+  psiImplPackage="com.github.juggernaut0.snek.psi.impl"
+
+  elementTypeHolderClass="com.github.juggernaut0.snek.psi.SnekTypes"
+  elementTypeClass="com.github.juggernaut0.snek.psi.SnekElementType"
+  tokenTypeClass="com.github.juggernaut0.snek.psi.SnekTokenType"
+}
+
+simpleFile ::= decl*
+
+decl ::= binding | call_expr
+
+binding ::= LET pattern EQUALS expr
+
+pattern ::= IDENT
+
+expr ::= STRING | call_expr
+call_expr ::= L_PAREN IDENT+ R_PAREN

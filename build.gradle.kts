@@ -17,6 +17,14 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir("src/main/gen")
+        }
+    }
+}
+
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version.set("2021.2.2")
