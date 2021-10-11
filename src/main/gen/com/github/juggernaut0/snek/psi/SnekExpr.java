@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface SnekExpr extends PsiElement {
 
   @Nullable
+  SnekBinaryExpr getBinaryExpr();
+
+  @Nullable
   SnekCallExpr getCallExpr();
 
   @Nullable

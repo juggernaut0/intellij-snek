@@ -29,6 +29,12 @@ public class SnekExprImpl extends ASTWrapperPsiElement implements SnekExpr {
 
   @Override
   @Nullable
+  public SnekBinaryExpr getBinaryExpr() {
+    return findChildByClass(SnekBinaryExpr.class);
+  }
+
+  @Override
+  @Nullable
   public SnekCallExpr getCallExpr() {
     return findChildByClass(SnekCallExpr.class);
   }

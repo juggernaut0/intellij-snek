@@ -28,7 +28,7 @@ decl_block ::= L_CURLY decl* R_CURLY {pin=1}
 
 type_decl ::= TYPE type_decl_name (type_cases | type_fields)? {pin=1}
 type_decl_name ::= IDENT type_params?
-type_params ::= LT IDENT+ RT
+type_params ::= LT IDENT+ GT
 type_cases ::= EQUALS type_case (BAR type_case)*
 type_case ::= type_case_decl | type_name
 type_case_decl ::= PUBLIC? IDENT type_fields
@@ -46,13 +46,17 @@ destr_pattern ::= L_CURLY field_pattern (COMMA field_pattern)* COMMA? R_CURLY ty
 field_pattern ::= name_pattern | (LET pattern EQUALS IDENT)
 type_annotation ::= COLON type_name
 
-type_name ::= named_type | func_type | L_PAREN R_PAREN | STAR | BANG | UNDERSCORE
-named_type ::= qname (LT type_name+ RT)?
+type_name ::= named_type | func_type | L_PAREN R_PAREN | TIMES | BANG | UNDERSCORE
+named_type ::= qname (LT type_name+ GT)?
 func_type ::= L_CURLY type_params? type_name* ARROW type_name R_CURLY
 
-expr ::= const_literal | call_expr | new_expr | lambda_expr | qname
+expr ::= const_literal | binary_expr | call_expr | new_expr | lambda_expr | qname
 const_literal ::= NUMBER | STRING | TRUE | FALSE | L_PAREN R_PAREN
-call_expr ::= L_PAREN expr+ R_PAREN {pin=1}
+binary_expr ::= L_PAREN unary_expr (binary_op unary_expr)+ R_PAREN
+binary_op ::= PLUS | MINUS | TIMES | DIV | AND | OR | LT | GT | LEQ | GEQ | EQ | NEQ
+unary_expr ::= unary_op* expr
+unary_op ::= PLUS | MINUS | BANG
+call_expr ::= L_PAREN (DOT | expr) expr* R_PAREN
 new_expr ::= NEW named_type? L_CURLY field_init_list? R_CURLY {pin=1}
 field_init_list ::= field_init (COMMA field_init)* COMMA?
 field_init ::= IDENT COLON expr

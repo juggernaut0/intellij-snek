@@ -36,6 +36,69 @@ public class SnekParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // L_PAREN unary_expr (binary_op unary_expr)+ R_PAREN
+  public static boolean binary_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "binary_expr")) return false;
+    if (!nextTokenIs(b, L_PAREN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, L_PAREN);
+    r = r && unary_expr(b, l + 1);
+    r = r && binary_expr_2(b, l + 1);
+    r = r && consumeToken(b, R_PAREN);
+    exit_section_(b, m, BINARY_EXPR, r);
+    return r;
+  }
+
+  // (binary_op unary_expr)+
+  private static boolean binary_expr_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "binary_expr_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = binary_expr_2_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!binary_expr_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "binary_expr_2", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // binary_op unary_expr
+  private static boolean binary_expr_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "binary_expr_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = binary_op(b, l + 1);
+    r = r && unary_expr(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // PLUS | MINUS | TIMES | DIV | AND | OR | LT | GT | LEQ | GEQ | EQ | NEQ
+  public static boolean binary_op(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "binary_op")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, BINARY_OP, "<binary op>");
+    r = consumeToken(b, PLUS);
+    if (!r) r = consumeToken(b, MINUS);
+    if (!r) r = consumeToken(b, TIMES);
+    if (!r) r = consumeToken(b, DIV);
+    if (!r) r = consumeToken(b, AND);
+    if (!r) r = consumeToken(b, OR);
+    if (!r) r = consumeToken(b, LT);
+    if (!r) r = consumeToken(b, GT);
+    if (!r) r = consumeToken(b, LEQ);
+    if (!r) r = consumeToken(b, GEQ);
+    if (!r) r = consumeToken(b, EQ);
+    if (!r) r = consumeToken(b, NEQ);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // LET pattern EQUALS expr
   public static boolean binding(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "binding")) return false;
@@ -52,33 +115,38 @@ public class SnekParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // L_PAREN expr+ R_PAREN
+  // L_PAREN (DOT | expr) expr* R_PAREN
   public static boolean call_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "call_expr")) return false;
     if (!nextTokenIs(b, L_PAREN)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CALL_EXPR, null);
+    boolean r;
+    Marker m = enter_section_(b);
     r = consumeToken(b, L_PAREN);
-    p = r; // pin = 1
-    r = r && report_error_(b, call_expr_1(b, l + 1));
-    r = p && consumeToken(b, R_PAREN) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    r = r && call_expr_1(b, l + 1);
+    r = r && call_expr_2(b, l + 1);
+    r = r && consumeToken(b, R_PAREN);
+    exit_section_(b, m, CALL_EXPR, r);
+    return r;
   }
 
-  // expr+
+  // DOT | expr
   private static boolean call_expr_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "call_expr_1")) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = expr(b, l + 1);
-    while (r) {
+    r = consumeToken(b, DOT);
+    if (!r) r = expr(b, l + 1);
+    return r;
+  }
+
+  // expr*
+  private static boolean call_expr_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "call_expr_2")) return false;
+    while (true) {
       int c = current_position_(b);
       if (!expr(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "call_expr_1", c)) break;
+      if (!empty_element_parsed_guard_(b, "call_expr_2", c)) break;
     }
-    exit_section_(b, m, null, r);
-    return r;
+    return true;
   }
 
   /* ********************************************************** */
@@ -205,12 +273,13 @@ public class SnekParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // const_literal | call_expr | new_expr | lambda_expr | qname
+  // const_literal | binary_expr | call_expr | new_expr | lambda_expr | qname
   public static boolean expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, EXPR, "<expr>");
     r = const_literal(b, l + 1);
+    if (!r) r = binary_expr(b, l + 1);
     if (!r) r = call_expr(b, l + 1);
     if (!r) r = new_expr(b, l + 1);
     if (!r) r = lambda_expr(b, l + 1);
@@ -472,7 +541,7 @@ public class SnekParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // qname (LT type_name+ RT)?
+  // qname (LT type_name+ GT)?
   public static boolean named_type(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "named_type")) return false;
     if (!nextTokenIs(b, IDENT)) return false;
@@ -484,21 +553,21 @@ public class SnekParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (LT type_name+ RT)?
+  // (LT type_name+ GT)?
   private static boolean named_type_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "named_type_1")) return false;
     named_type_1_0(b, l + 1);
     return true;
   }
 
-  // LT type_name+ RT
+  // LT type_name+ GT
   private static boolean named_type_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "named_type_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LT);
     r = r && named_type_1_0_1(b, l + 1);
-    r = r && consumeToken(b, RT);
+    r = r && consumeToken(b, GT);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -898,7 +967,7 @@ public class SnekParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // named_type | func_type | L_PAREN R_PAREN | STAR | BANG | UNDERSCORE
+  // named_type | func_type | L_PAREN R_PAREN | TIMES | BANG | UNDERSCORE
   public static boolean type_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_name")) return false;
     boolean r;
@@ -906,7 +975,7 @@ public class SnekParser implements PsiParser, LightPsiParser {
     r = named_type(b, l + 1);
     if (!r) r = func_type(b, l + 1);
     if (!r) r = parseTokens(b, 0, L_PAREN, R_PAREN);
-    if (!r) r = consumeToken(b, STAR);
+    if (!r) r = consumeToken(b, TIMES);
     if (!r) r = consumeToken(b, BANG);
     if (!r) r = consumeToken(b, UNDERSCORE);
     exit_section_(b, l, m, r, false, null);
@@ -914,7 +983,7 @@ public class SnekParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LT IDENT+ RT
+  // LT IDENT+ GT
   public static boolean type_params(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_params")) return false;
     if (!nextTokenIs(b, LT)) return false;
@@ -922,7 +991,7 @@ public class SnekParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, LT);
     r = r && type_params_1(b, l + 1);
-    r = r && consumeToken(b, RT);
+    r = r && consumeToken(b, GT);
     exit_section_(b, m, TYPE_PARAMS, r);
     return r;
   }
@@ -939,6 +1008,42 @@ public class SnekParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "type_params_1", c)) break;
     }
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // unary_op* expr
+  public static boolean unary_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "unary_expr")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, UNARY_EXPR, "<unary expr>");
+    r = unary_expr_0(b, l + 1);
+    r = r && expr(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // unary_op*
+  private static boolean unary_expr_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "unary_expr_0")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!unary_op(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "unary_expr_0", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // PLUS | MINUS | BANG
+  public static boolean unary_op(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "unary_op")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, UNARY_OP, "<unary op>");
+    r = consumeToken(b, PLUS);
+    if (!r) r = consumeToken(b, MINUS);
+    if (!r) r = consumeToken(b, BANG);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

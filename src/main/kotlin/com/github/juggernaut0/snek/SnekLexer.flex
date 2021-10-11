@@ -48,22 +48,32 @@ STRING_CONTENTS=[^\"\'\\]|\\.
   "new"              { return NEW; }
 
   "("                { return L_PAREN; }
+  ")"                { return R_PAREN; }
   "{"                { return L_CURLY; }
   "}"                { return R_CURLY; }
-  "<"                { return LT; }
-  ">"                { return RT; }
-  "="                { return EQUALS; }
-  "|"                { return BAR; }
   ","                { return COMMA; }
   ":"                { return COLON; }
   "_"                { return UNDERSCORE; }
   "["                { return L_SQUARE; }
   "]"                { return R_SQUARE; }
-  ")"                { return R_PAREN; }
-  "*"                { return STAR; }
-  "!"                { return BANG; }
   "->"               { return ARROW; }
   "."                { return DOT; }
+  "+"                { return PLUS; }
+  "-"                { return MINUS; }
+  "*"                { return TIMES; }
+  "/"                { return DIV; }
+  "<="               { return LEQ; }
+  "<"                { return LT; }
+  ">="               { return GEQ; }
+  ">"                { return GT; }
+  "=="               { return EQ; }
+  "!="               { return NEQ; }
+  "&&"               { return AND; }
+  "||"               { return OR; }
+  "="                { return EQUALS; }
+  "!"                { return BANG; }
+  "|"                { return BAR; }
+
   "true"             { return TRUE; }
   "false"            { return FALSE; }
 

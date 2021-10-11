@@ -8,6 +8,8 @@ import com.github.juggernaut0.snek.psi.impl.*;
 
 public interface SnekTypes {
 
+  IElementType BINARY_EXPR = new SnekElementType("BINARY_EXPR");
+  IElementType BINARY_OP = new SnekElementType("BINARY_OP");
   IElementType BINDING = new SnekElementType("BINDING");
   IElementType CALL_EXPR = new SnekElementType("CALL_EXPR");
   IElementType CONST_LITERAL = new SnekElementType("CONST_LITERAL");
@@ -40,35 +42,46 @@ public interface SnekTypes {
   IElementType TYPE_FIELD_LIST = new SnekElementType("TYPE_FIELD_LIST");
   IElementType TYPE_NAME = new SnekElementType("TYPE_NAME");
   IElementType TYPE_PARAMS = new SnekElementType("TYPE_PARAMS");
+  IElementType UNARY_EXPR = new SnekElementType("UNARY_EXPR");
+  IElementType UNARY_OP = new SnekElementType("UNARY_OP");
   IElementType WILDCARD_PATTERN = new SnekElementType("WILDCARD_PATTERN");
 
+  IElementType AND = new SnekTokenType("AND");
   IElementType ARROW = new SnekTokenType("ARROW");
   IElementType BANG = new SnekTokenType("BANG");
   IElementType BAR = new SnekTokenType("BAR");
   IElementType COLON = new SnekTokenType("COLON");
   IElementType COMMA = new SnekTokenType("COMMA");
   IElementType COMMENT = new SnekTokenType("COMMENT");
+  IElementType DIV = new SnekTokenType("DIV");
   IElementType DOT = new SnekTokenType("DOT");
+  IElementType EQ = new SnekTokenType("EQ");
   IElementType EQUALS = new SnekTokenType("EQUALS");
   IElementType FALSE = new SnekTokenType("FALSE");
   IElementType FROM = new SnekTokenType("FROM");
+  IElementType GEQ = new SnekTokenType("GEQ");
+  IElementType GT = new SnekTokenType("GT");
   IElementType IDENT = new SnekTokenType("IDENT");
   IElementType IMPORT = new SnekTokenType("IMPORT");
+  IElementType LEQ = new SnekTokenType("LEQ");
   IElementType LET = new SnekTokenType("LET");
   IElementType LT = new SnekTokenType("LT");
   IElementType L_CURLY = new SnekTokenType("L_CURLY");
   IElementType L_PAREN = new SnekTokenType("L_PAREN");
   IElementType L_SQUARE = new SnekTokenType("L_SQUARE");
+  IElementType MINUS = new SnekTokenType("MINUS");
   IElementType NAMESPACE = new SnekTokenType("NAMESPACE");
+  IElementType NEQ = new SnekTokenType("NEQ");
   IElementType NEW = new SnekTokenType("NEW");
   IElementType NUMBER = new SnekTokenType("NUMBER");
+  IElementType OR = new SnekTokenType("OR");
+  IElementType PLUS = new SnekTokenType("PLUS");
   IElementType PUBLIC = new SnekTokenType("PUBLIC");
-  IElementType RT = new SnekTokenType("RT");
   IElementType R_CURLY = new SnekTokenType("R_CURLY");
   IElementType R_PAREN = new SnekTokenType("R_PAREN");
   IElementType R_SQUARE = new SnekTokenType("R_SQUARE");
-  IElementType STAR = new SnekTokenType("STAR");
   IElementType STRING = new SnekTokenType("STRING");
+  IElementType TIMES = new SnekTokenType("TIMES");
   IElementType TRUE = new SnekTokenType("TRUE");
   IElementType TYPE = new SnekTokenType("TYPE");
   IElementType UNDERSCORE = new SnekTokenType("UNDERSCORE");
@@ -76,7 +89,13 @@ public interface SnekTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-      if (type == BINDING) {
+      if (type == BINARY_EXPR) {
+        return new SnekBinaryExprImpl(node);
+      }
+      else if (type == BINARY_OP) {
+        return new SnekBinaryOpImpl(node);
+      }
+      else if (type == BINDING) {
         return new SnekBindingImpl(node);
       }
       else if (type == CALL_EXPR) {
@@ -171,6 +190,12 @@ public interface SnekTypes {
       }
       else if (type == TYPE_PARAMS) {
         return new SnekTypeParamsImpl(node);
+      }
+      else if (type == UNARY_EXPR) {
+        return new SnekUnaryExprImpl(node);
+      }
+      else if (type == UNARY_OP) {
+        return new SnekUnaryOpImpl(node);
       }
       else if (type == WILDCARD_PATTERN) {
         return new SnekWildcardPatternImpl(node);

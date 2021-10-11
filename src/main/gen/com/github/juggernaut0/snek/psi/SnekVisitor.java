@@ -7,6 +7,14 @@ import com.intellij.psi.PsiElement;
 
 public class SnekVisitor extends PsiElementVisitor {
 
+  public void visitBinaryExpr(@NotNull SnekBinaryExpr o) {
+    visitPsiElement(o);
+  }
+
+  public void visitBinaryOp(@NotNull SnekBinaryOp o) {
+    visitPsiElement(o);
+  }
+
   public void visitBinding(@NotNull SnekBinding o) {
     visitPsiElement(o);
   }
@@ -132,6 +140,14 @@ public class SnekVisitor extends PsiElementVisitor {
   }
 
   public void visitTypeParams(@NotNull SnekTypeParams o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUnaryExpr(@NotNull SnekUnaryExpr o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUnaryOp(@NotNull SnekUnaryOp o) {
     visitPsiElement(o);
   }
 
