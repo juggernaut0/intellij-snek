@@ -7,4 +7,19 @@ import com.intellij.psi.PsiElement;
 
 public interface SnekPattern extends PsiElement {
 
+  @Nullable
+  SnekConstLiteral getConstLiteral();
+
+  @Nullable
+  SnekDestrPattern getDestrPattern();
+
+  @Nullable
+  SnekListPattern getListPattern();
+
+  @Nullable
+  SnekNamePattern getNamePattern();
+
+  @Nullable
+  SnekWildcardPattern getWildcardPattern();
+
 }

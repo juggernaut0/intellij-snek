@@ -11,16 +11,51 @@
   elementTypeHolderClass="com.github.juggernaut0.snek.psi.SnekTypes"
   elementTypeClass="com.github.juggernaut0.snek.psi.SnekElementType"
   tokenTypeClass="com.github.juggernaut0.snek.psi.SnekTokenType"
+
+  tokens=[COMMENT='COMMENT']
 }
 
-snekFile ::= decl*
+snekFile ::= import_from* decl* call_expr?
 
-decl ::= COMMENT | binding | call_expr {recoverWhile=recover}
-private recover ::= !(PUBLIC | LET | L_PAREN)
+import_from ::= IMPORT qname* FROM STRING
 
-binding ::= PUBLIC? LET pattern EQUALS expr {pin=2}
 
-pattern ::= IDENT
+decl ::= PUBLIC? (namespace_decl | type_decl | binding) {recoverWhile=recover}
+private recover ::= !(PUBLIC | LET | TYPE | NAMESPACE | L_PAREN | R_CURLY)
 
-expr ::= STRING | IDENT | call_expr
+namespace_decl ::= NAMESPACE qname decl_block {pin=1}
+decl_block ::= L_CURLY decl* R_CURLY {pin=1}
+
+type_decl ::= TYPE type_decl_name (type_cases | type_fields)? {pin=1}
+type_decl_name ::= IDENT type_params?
+type_params ::= LT IDENT+ RT
+type_cases ::= EQUALS type_case (BAR type_case)*
+type_case ::= type_case_decl | type_name
+type_case_decl ::= PUBLIC? IDENT type_fields
+type_fields ::= L_CURLY type_field_list? R_CURLY
+type_field_list ::= type_field (COMMA type_field)* COMMA?
+type_field ::= PUBLIC? IDENT COLON type_name
+
+binding ::= LET pattern EQUALS expr {pin=1}
+
+pattern ::= const_literal | wildcard_pattern | name_pattern | list_pattern | destr_pattern
+wildcard_pattern ::= UNDERSCORE type_annotation?
+name_pattern ::= IDENT type_annotation?
+list_pattern ::= L_SQUARE pattern* R_SQUARE
+destr_pattern ::= L_CURLY field_pattern (COMMA field_pattern)* COMMA? R_CURLY type_annotation?
+field_pattern ::= name_pattern | (LET pattern EQUALS IDENT)
+type_annotation ::= COLON type_name
+
+type_name ::= named_type | func_type | L_PAREN R_PAREN | STAR | BANG | UNDERSCORE
+named_type ::= qname (LT type_name+ RT)?
+func_type ::= L_CURLY type_params? type_name* ARROW type_name R_CURLY
+
+expr ::= const_literal | call_expr | new_expr | lambda_expr | qname
+const_literal ::= NUMBER | STRING | TRUE | FALSE | L_PAREN R_PAREN
 call_expr ::= L_PAREN expr+ R_PAREN {pin=1}
+new_expr ::= NEW named_type? L_CURLY field_init_list? R_CURLY {pin=1}
+field_init_list ::= field_init (COMMA field_init)* COMMA?
+field_init ::= IDENT COLON expr
+lambda_expr ::= L_CURLY pattern* ARROW lambda_body R_CURLY {pin=1}
+lambda_body ::= (binding* expr)+
+qname ::= IDENT (DOT IDENT)*

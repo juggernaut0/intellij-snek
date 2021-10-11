@@ -5,15 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface SnekDecl extends PsiElement {
+public interface SnekDestrPattern extends PsiElement {
+
+  @NotNull
+  List<SnekFieldPattern> getFieldPatternList();
 
   @Nullable
-  SnekBinding getBinding();
-
-  @Nullable
-  SnekNamespaceDecl getNamespaceDecl();
-
-  @Nullable
-  SnekTypeDecl getTypeDecl();
+  SnekTypeAnnotation getTypeAnnotation();
 
 }

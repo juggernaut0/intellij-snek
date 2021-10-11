@@ -35,8 +35,14 @@ public class SnekDeclImpl extends ASTWrapperPsiElement implements SnekDecl {
 
   @Override
   @Nullable
-  public SnekCallExpr getCallExpr() {
-    return findChildByClass(SnekCallExpr.class);
+  public SnekNamespaceDecl getNamespaceDecl() {
+    return findChildByClass(SnekNamespaceDecl.class);
+  }
+
+  @Override
+  @Nullable
+  public SnekTypeDecl getTypeDecl() {
+    return findChildByClass(SnekTypeDecl.class);
   }
 
 }

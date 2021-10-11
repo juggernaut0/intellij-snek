@@ -27,4 +27,34 @@ public class SnekPatternImpl extends ASTWrapperPsiElement implements SnekPattern
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public SnekConstLiteral getConstLiteral() {
+    return findChildByClass(SnekConstLiteral.class);
+  }
+
+  @Override
+  @Nullable
+  public SnekDestrPattern getDestrPattern() {
+    return findChildByClass(SnekDestrPattern.class);
+  }
+
+  @Override
+  @Nullable
+  public SnekListPattern getListPattern() {
+    return findChildByClass(SnekListPattern.class);
+  }
+
+  @Override
+  @Nullable
+  public SnekNamePattern getNamePattern() {
+    return findChildByClass(SnekNamePattern.class);
+  }
+
+  @Override
+  @Nullable
+  public SnekWildcardPattern getWildcardPattern() {
+    return findChildByClass(SnekWildcardPattern.class);
+  }
+
 }

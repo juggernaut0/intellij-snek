@@ -10,4 +10,16 @@ public interface SnekExpr extends PsiElement {
   @Nullable
   SnekCallExpr getCallExpr();
 
+  @Nullable
+  SnekConstLiteral getConstLiteral();
+
+  @Nullable
+  SnekLambdaExpr getLambdaExpr();
+
+  @Nullable
+  SnekNewExpr getNewExpr();
+
+  @Nullable
+  SnekQname getQname();
+
 }

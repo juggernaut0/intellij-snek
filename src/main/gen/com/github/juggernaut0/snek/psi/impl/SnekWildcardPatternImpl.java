@@ -11,14 +11,14 @@ import static com.github.juggernaut0.snek.psi.SnekTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.github.juggernaut0.snek.psi.*;
 
-public class SnekExprImpl extends ASTWrapperPsiElement implements SnekExpr {
+public class SnekWildcardPatternImpl extends ASTWrapperPsiElement implements SnekWildcardPattern {
 
-  public SnekExprImpl(@NotNull ASTNode node) {
+  public SnekWildcardPatternImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull SnekVisitor visitor) {
-    visitor.visitExpr(this);
+    visitor.visitWildcardPattern(this);
   }
 
   @Override
@@ -29,32 +29,8 @@ public class SnekExprImpl extends ASTWrapperPsiElement implements SnekExpr {
 
   @Override
   @Nullable
-  public SnekCallExpr getCallExpr() {
-    return findChildByClass(SnekCallExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public SnekConstLiteral getConstLiteral() {
-    return findChildByClass(SnekConstLiteral.class);
-  }
-
-  @Override
-  @Nullable
-  public SnekLambdaExpr getLambdaExpr() {
-    return findChildByClass(SnekLambdaExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public SnekNewExpr getNewExpr() {
-    return findChildByClass(SnekNewExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public SnekQname getQname() {
-    return findChildByClass(SnekQname.class);
+  public SnekTypeAnnotation getTypeAnnotation() {
+    return findChildByClass(SnekTypeAnnotation.class);
   }
 
 }
