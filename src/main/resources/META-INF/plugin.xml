@@ -18,6 +18,7 @@
                                implementationClass="com.github.juggernaut0.snek.SnekParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Snek"
                                        implementationClass="com.github.juggernaut0.snek.SnekSyntaxHighlighterFactory"/>
+        <lang.braceMatcher language="Snek" implementationClass="com.github.juggernaut0.snek.SnekPairedBraceMatcher"/>
     </extensions>
 
     <actions>
