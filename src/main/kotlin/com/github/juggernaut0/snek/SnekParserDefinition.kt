@@ -1,7 +1,7 @@
 package com.github.juggernaut0.snek
 
 import com.github.juggernaut0.snek.parser.SnekParser
-import com.github.juggernaut0.snek.psi.SimpleFile
+import com.github.juggernaut0.snek.psi.SnekFile
 import com.github.juggernaut0.snek.psi.SnekTypes
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
@@ -30,7 +30,7 @@ class SnekParserDefinition : ParserDefinition {
   }
 
   override fun getStringLiteralElements(): TokenSet {
-    return TokenSet.create(SnekTypes.STRING)
+    return STRINGS
   }
 
   override fun createParser(project: Project): PsiParser {
@@ -42,7 +42,7 @@ class SnekParserDefinition : ParserDefinition {
   }
 
   override fun createFile(viewProvider: FileViewProvider): PsiFile {
-    return SimpleFile(viewProvider)
+    return SnekFile(viewProvider)
   }
 
   override fun spaceExistenceTypeBetweenTokens(left: ASTNode, right: ASTNode): SpaceRequirements {
@@ -56,6 +56,7 @@ class SnekParserDefinition : ParserDefinition {
   companion object {
     val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
     val COMMENTS = TokenSet.create(SnekTypes.COMMENT)
+    val STRINGS = TokenSet.create(SnekTypes.STRING)
     val FILE = IFileElementType(SnekLanguage)
   }
 }

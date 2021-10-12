@@ -4,7 +4,7 @@
     <vendor url="http://twarner.dev">Tom Warner</vendor>
 
     <description><![CDATA[
-    IntelliJ language support for <a href="https://github.com/juggernaut0/snek">snek</a> programming language.
+    IntelliJ language support for the <a href="https://github.com/juggernaut0/snek">snek</a> programming language.
     ]]></description>
 
     <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
@@ -12,13 +12,15 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileType name="Snek File" implementationClass="com.github.juggernaut0.snek.SnekFileType"
+        <fileType name="Snek" implementationClass="com.github.juggernaut0.snek.SnekFileType"
                   fieldName="INSTANCE" language="Snek" extensions="snek"/>
         <lang.parserDefinition language="Snek"
                                implementationClass="com.github.juggernaut0.snek.SnekParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Snek"
                                        implementationClass="com.github.juggernaut0.snek.SnekSyntaxHighlighterFactory"/>
         <lang.braceMatcher language="Snek" implementationClass="com.github.juggernaut0.snek.SnekPairedBraceMatcher"/>
+        <lang.formatter language="Snek"
+                        implementationClass="com.github.juggernaut0.snek.SnekFormattingModelBuilder"/>
     </extensions>
 
     <actions>
