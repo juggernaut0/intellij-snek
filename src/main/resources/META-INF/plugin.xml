@@ -1,11 +1,10 @@
 <idea-plugin>
     <id>com.github.juggernaut0.intellij-snek</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>Snek</name>
+    <vendor url="http://twarner.dev">Tom Warner</vendor>
 
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    IntelliJ language support for the <a href="https://github.com/juggernaut0/snek">snek</a> programming language.
     ]]></description>
 
     <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
@@ -13,7 +12,15 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <fileType name="Snek" implementationClass="com.github.juggernaut0.snek.SnekFileType"
+                  fieldName="INSTANCE" language="Snek" extensions="snek"/>
+        <lang.parserDefinition language="Snek"
+                               implementationClass="com.github.juggernaut0.snek.SnekParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Snek"
+                                       implementationClass="com.github.juggernaut0.snek.SnekSyntaxHighlighterFactory"/>
+        <lang.braceMatcher language="Snek" implementationClass="com.github.juggernaut0.snek.SnekPairedBraceMatcher"/>
+        <lang.formatter language="Snek"
+                        implementationClass="com.github.juggernaut0.snek.SnekFormattingModelBuilder"/>
     </extensions>
 
     <actions>

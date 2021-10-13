@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.juggernaut0"
-version = "1.0-SNAPSHOT"
+version = "1"
 
 repositories {
     mavenCentral()
@@ -15,6 +15,14 @@ dependencies {
     implementation(kotlin("stdlib"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir("src/main/gen")
+        }
+    }
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
