@@ -49,56 +49,60 @@ class SnekBlockVisitor(private val settings: CodeStyleSettings) : SnekVisitor() 
     fun getBlocks(): List<Block> = blocks
 
     private fun addBlock(
-        psi: PsiElement,
+        psi: PsiElement?,
         wrap: Wrap? = null,
         indent: Indent? = null,
         childIndent: Indent? = null,
         spacing: SpacingBuilder? = null,
     ) {
+        if (psi == null) return
         blocks.add(SnekBlock(psi, settings, wrap, alignment, indent, childIndent, spacing))
     }
 
     override fun visitFile(file: PsiFile) {
         super.visitFile(file)
         if (file !is SnekFile) return
-        alignment = Alignment.createAlignment()
-        for (import in file.imports) {
-            addBlock(import)
-        }
-        for (decl in file.decls) {
-            decl.accept(this)
-        }
-        val callExpr = file.callExpr
-        if (callExpr != null) {
-            addBlock(callExpr)
+        withAlignment {
+            for (import in file.imports) {
+                addBlock(import)
+            }
+            for (decl in file.decls) {
+                addBlock(decl)
+            }
+            addBlock(file.callExpr)
         }
     }
 
     override fun visitDecl(o: SnekDecl) {
         super.visitDecl(o)
-        o.binding?.let { addBlock(it) }
-        //o.typeDecl?.accept(this)
-        o.namespaceDecl?.let { addBlock(it, spacing = SpacingBuilder(settings, SnekLanguage).around(SnekTypes.QNAME).spaces(1)) }
+        addBlock(o.findChildByType(SnekTypes.PUBLIC))
+        addBlock(o.binding)
+        addBlock(o.typeDecl)
+        addBlock(o.namespaceDecl, spacing = SpacingBuilder(settings, SnekLanguage).around(SnekTypes.QNAME).spaces(1))
     }
 
     override fun visitNamespaceDecl(o: SnekNamespaceDecl) {
         super.visitNamespaceDecl(o)
-        addBlock(o.findChildByType(SnekTypes.NAMESPACE)!!)
-        addBlock(o.qname!!)
-        //o.declBlock?.accept(this)
-        o.declBlock?.let { addBlock(it, childIndent = Indent.getNormalIndent()) }
+        addBlock(o.findChildByType(SnekTypes.NAMESPACE))
+        addBlock(o.qname)
+        addBlock(o.declBlock, childIndent = Indent.getNormalIndent())
     }
 
     override fun visitDeclBlock(o: SnekDeclBlock) {
         super.visitDeclBlock(o)
-        addBlock(o.findChildByType(SnekTypes.L_CURLY)!!)
-        alignment = Alignment.createAlignment()
-        for (decl in o.declList) {
-            addBlock(decl, indent = Indent.getNormalIndent())
+        addBlock(o.findChildByType(SnekTypes.L_CURLY))
+        withAlignment {
+            for (decl in o.declList) {
+                addBlock(decl, indent = Indent.getNormalIndent())
+            }
         }
-        alignment = null
-        addBlock(o.findChildByType(SnekTypes.R_CURLY)!!)
+        addBlock(o.findChildByType(SnekTypes.R_CURLY))
     }
 
     private fun PsiElement.findChildByType(type: IElementType) = node.findChildByType(type)?.psi
+    private inline fun withAlignment(block: () -> Unit) {
+        alignment = Alignment.createAlignment()
+        block()
+        alignment = null
+    }
 }
